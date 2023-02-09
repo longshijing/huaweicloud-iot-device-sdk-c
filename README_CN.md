@@ -112,12 +112,13 @@ SDK需运行在Linux操作系统上，并安装好gcc（建议4.8及以上版本
    
    ***交叉编译运行如下配置命令：***
    
+   *./config no-asm shared --prefix=/home/test/openssl --openssldir=/home/test/openssl/ssl --cross-compile-prefix=xxx/arm-linux-gnueabi-* 
+   
+   *其中“prefix”是自定义安装目录，“openssldir”是自定义配置文件目录，“shared”作用是生成动态链接库（即.so库）,--cross-compile-prefix是交叉编译工具链的位置。 （图片以交叉工具链路径在/usr/xxxxx/gcc-linaro-7.5.0-arm-linux-gnueabi为例）*
 
-*./config no-asm shared --prefix=/home/test/openssl --openssldir=/home/test/openssl/ssl --cross-compile-prefix=xxx/arm-linux-gnueabi-* 
+<img src="./doc/doc_cn/openssl交叉编译.png" alt="1673944253162" style="zoom:67%;" />
 
-*其中“prefix”是自定义安装目录，“openssldir”是自定义配置文件目录，“shared”作用是生成动态链接库（即.so库）,--cross-compile-prefix是交叉编译工具链的位置。 （图片以交叉工具链路径在/usr/longshijing/gcc-linaro-7.5.0-arm-linux-gnueabi为例）*
 
-     ![1673944253162](./doc/doc_cn/openssl交叉编译.png)
 
 
 3. 编译出库。
@@ -469,25 +470,27 @@ services[1].properties = service2;
   
   设备鉴权通过并且配置了相关回调函数后，可以接受平台命令（SDK已自动实现相关TOPIC的订阅）。主要有如下命令：设备消息下发、平台命令下发、平台设置设备属性、平台查询设备属性、平台通知网关新增子设备、平台通知网关删除子设备（参数具体说明请参考API文档）。注意：平台采用了隐式订阅的功能，对于下行的系统topic，设备无需订阅，平台默认该设备订阅了qos为0的系统topic。如果需要qos为1的下行系统topic，需要设备自行调用订阅接口来订阅。
   
-  - 设备接收消息下发（透传的消息）
-	  ![](./doc/doc_cn/messageDown.png)
-	  设备收到消息后可以通过回调函数进行命令处理，可以参考demo中HandleMessageDown函数（需在回调函数配置中提前设置，下行消息的处理均需要提前设置回调函数）。
+  （Ps: 使用IOTedeg时，需要手动订阅，订阅的接口为IOTA_SubscribeUserTopic）
+	
+	- 设备接收消息下发（透传的消息）
+    ![](./doc/doc_cn/messageDown.png)
+    设备收到消息后可以通过回调函数进行命令处理，可以参考demo中HandleMessageDown函数（需在回调函数配置中提前设置，下行消息的处理均需要提前设置回调函数）。
   
-  - 设备接收命令下发（profile中定义的命令）：
+  - 设备接收命令下发（profile中定义的命令）[如果没有收到，可能是因为没有进行订阅]：
   ![](./doc/doc_cn/cmdDown.png)
-    
-  - 设备接收平台属性设置
-	![](./doc/doc_cn/setDown.png)
-	收到命令后可以通过回调函数进行命令处理。当收到平台下发的设置设备属性命令时，可以调用IOTA_PropertiesSetResponse接口主动上报结果，请参考demo中HandlePropertiesSet函数（需在回调函数配置中提前设置）。
-
-  - 设备接收平台属性查询
+	  
+	- 设备接收平台属性设置
+![](./doc/doc_cn/setDown.png)
+  收到命令后可以通过回调函数进行命令处理。当收到平台下发的设置设备属性命令时，可以调用IOTA_PropertiesSetResponse接口主动上报结果，请参考demo中HandlePropertiesSet函数（需在回调函数配置中提前设置）。
+	
+	- 设备接收平台属性查询
 	![](./doc/doc_cn/getDown.png)
-	收到命令后可以通过回调函数进行命令处理。当收到平台下发的查询设备属性命令时，可以调用IOTA_PropertiesGetResponse接口主动上报结果，请参考demo中HandlePropertiesGet函数（需在回调函数配置中提前设置）。
+  收到命令后可以通过回调函数进行命令处理。当收到平台下发的查询设备属性命令时，可以调用IOTA_PropertiesGetResponse接口主动上报结果，请参考demo中HandlePropertiesGet函数（需在回调函数配置中提前设置）。
 	
-  - 平台通知网关新增子设备
+	- 平台通知网关新增子设备
 	![](./doc/doc_cn/addSubDevice.png)
-	收到命令后可以通过回调函数进行命令处理。当收到平台下发的新增子设备通知时，可以调用IOTA_BatchPropertiesReport接口给子设备上报数据（请查看子设备数据上报），请参考demo中HandleEventsDown函数（需在回调函数配置中提前设置）。
-	
+  收到命令后可以通过回调函数进行命令处理。当收到平台下发的新增子设备通知时，可以调用IOTA_BatchPropertiesReport接口给子设备上报数据（请查看子设备数据上报），请参考demo中HandleEventsDown函数（需在回调函数配置中提前设置）。
+  
   - 平台通知网关删除子设备
   ![](./doc/doc_cn/deleteSubDevice.png)
   
