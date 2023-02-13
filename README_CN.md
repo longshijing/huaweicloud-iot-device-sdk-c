@@ -470,7 +470,7 @@ services[1].properties = service2;
   
   设备鉴权通过并且配置了相关回调函数后，可以接受平台命令（SDK已自动实现相关TOPIC的订阅）。主要有如下命令：设备消息下发、平台命令下发、平台设置设备属性、平台查询设备属性、平台通知网关新增子设备、平台通知网关删除子设备（参数具体说明请参考API文档）。注意：平台采用了隐式订阅的功能，对于下行的系统topic，设备无需订阅，平台默认该设备订阅了qos为0的系统topic。如果需要qos为1的下行系统topic，需要设备自行调用订阅接口来订阅。
   
-  （Ps: 使用IOTedeg时，需要手动订阅，订阅的接口为IOTA_SubscribeUserTopic）
+  （Ps: 使用IOTedeg时，需要手动订阅，订阅的接口为SubscribeAll）
 	
 	- 设备接收消息下发（透传的消息）
     ![](./doc/doc_cn/messageDown.png)
